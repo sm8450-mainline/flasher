@@ -1,5 +1,6 @@
 #!/bin/sh
 # This should be run after pmbootstrap export and should be run from the kernel source dir
+THISDIR=$(dirname $0)
 cat .output/arch/arm64/boot/Image.gz .output/arch/arm64/boot/dts/qcom/sm8450-xiaomi-cupid.dtb > /tmp/Image.gz-dtb
 mkbootimg \
     --kernel /tmp/Image.gz-dtb \
@@ -20,8 +21,8 @@ fastboot set_active b
 fastboot erase vendor_boot
 fastboot erase recovery
 # emptydtbo.img has exactly two null bytes
-fastboot flash dtbo emptydtbo.img
-fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img
-fastboot --disable-verity --disable-verification flash vbmeta_system vbmeta_system.img
+fastboot flash dtbo $THISDIR/emptydtbo.img
+fastboot --disable-verity --disable-verification flash vbmeta $THISDIR/vbmeta.img
+fastboot --disable-verity --disable-verification flash vbmeta_system $THISDIR/vbmeta_system.img
 fastboot flash boot /tmp/boot.img
 fastboot reboot
